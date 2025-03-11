@@ -1,24 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from "react-router-dom";
+import Header from "./Header/Header";
+import Home from "./Home/Home";
+import Diaries from "./diaries/Diaries";
+import Auth from "./auth/Auth";
+import { useDispatch, useSelector } from "react-redux";
+import Add from "./Add/Add";
+import Profile from "./Profile/Profile";
+import DiaryUpdate from "./diaries/DiaryUpdate";
+import { useEffect } from "react";
+import { authActions } from "./store/store";
+// import Add from "./Add/add";
 
 function App() {
+  const dispatch = useDispatch()
+  const isLoggedIn = useSelector(state => state.isLoggedIn);
+
+  useEffect(() => {
+    if (localStorage.getItem('userId')) {
+      dispatch(authActions.login())
+    }
+  } ,[dispatch])
+  console.log(isLoggedIn)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <>
+      <header>
+        <Header />
       </header>
-    </div>
+      <section>
+        <Routes>
+          <Route path="/" element={ <Home />} />
+          <Route path="/diaries" element={ <Diaries />} />
+          <Route path="/auth" element={ <Auth />} />
+          {isLoggedIn && <>
+          <Route path="/add" element={ <Add />} />
+          <Route path="/profile" element={ <Profile />} />
+          <Route path="/post/:id" element={<DiaryUpdate />} />
+          </> 
+          }
+        </Routes>
+      </section>
+    </>
   );
 }
 
